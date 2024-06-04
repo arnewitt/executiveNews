@@ -4,7 +4,7 @@ import logging
 from time import sleep
 from datetime import datetime
 
-from news.news import NYTBusinessNews, TagesschauNews
+from news.news import NYTBusinessNews, TagesschauNews, BloombergNews
 from summarizer.summarizer import NewsSummarizer 
 
 from openai import OpenAI
@@ -25,7 +25,8 @@ def run_summarization():
     hours_limit = 24
     news_feeds = [
         TagesschauNews(hours_limit=hours_limit, news_interest="wirtschaft"),
-        NYTBusinessNews(hours_limit)
+        NYTBusinessNews(hours_limit),
+        BloombergNews(hours_limit=hours_limit)
     ]
 
     # Create summary
