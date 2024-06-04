@@ -1,26 +1,43 @@
 
-import pytz
+import os
+import logging
 from time import sleep
-from datetime import datetime, timedelta
+from datetime import datetime
 
-def is_less_than_x_hours_ago(date_str, hours: int = 24):
-    # Define the date format
-    date_format = "%a, %d %b %Y %H:%M:%S %z"
-    
-    # Parse the date string into a datetime object
-    parsed_date = datetime.strptime(date_str, date_format)
-    
-    # Get the current date and time in UTC
-    current_date = datetime.now(pytz.utc)
-    
-    # Calculate the difference
-    time_difference = current_date - parsed_date
-    
-    # Check if the difference is less than 48 hours
-    return time_difference < timedelta(hours=hours)
+from news.news import NYTBusinessNews, TagesschauNews
+from summarizer.summarizer import NewsSummarizer 
+
+from openai import OpenAI
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+
+def run_summarization():
+    # Setup OpenAI client
+    base_url = os.environ.get("BASE_URL", None)
+    api_key = os.environ.get("API_KEY", None)
+    openai_client = OpenAI(base_url=base_url, api_key=api_key)
+
+    # Configure news search
+    hours_limit = 24
+    news_feeds = [
+        TagesschauNews(hours_limit=hours_limit, news_interest="wirtschaft"),
+        NYTBusinessNews(hours_limit)
+    ]
+
+    # Create summary
+    news_summarizer = NewsSummarizer(news_feeds=news_feeds, openai_client=openai_client)
+    summary = news_summarizer.summarize_news()
+
+    # Summary can be processed further depending on use case, e.g. sending via e-mail
+    print(summary)
 
 def check_time_and_run(target_hour, target_minute):
     while True:
+        logging.info('Checking the time...')
+
         # Get the current time
         now = datetime.now()
         current_hour = now.hour
@@ -28,7 +45,9 @@ def check_time_and_run(target_hour, target_minute):
 
         # Check if the current time matches the target time
         if current_hour == target_hour and current_minute == target_minute:
+            logging.info('Target time reached, running summarization...')
             run_summarization()
+            logging.info('Summarization completed.')
             # Wait for 60 seconds to avoid running multiple times within the same minute
             sleep(60)
         else:
