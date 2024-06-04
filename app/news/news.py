@@ -4,7 +4,17 @@ import ssl
 import pytz
 import feedparser
 
-def is_less_than_x_hours_ago(date_str, hours: int = 24):
+def is_less_than_x_hours_ago(date_str, hours: int = 24) -> bool:
+    """
+    Checks if a given date string is less than x amount of hours ago from current system time.
+    
+    Parameters:
+    - date_str (str): The date string to check.
+    - hours (int): The number of hours to check against.
+
+    Returns:
+    - bool: True if the date is less than x hours ago, False otherwise.
+    """
     # Define the date format
     date_format = "%a, %d %b %Y %H:%M:%S %z"
     
@@ -21,6 +31,8 @@ def is_less_than_x_hours_ago(date_str, hours: int = 24):
     return time_difference < timedelta(hours=hours)
 
 class News:
+    """Base Class for News to be summarized"""
+
     def __init__(self, hours_limit: int) -> None:
         self.rss_url = None
         self.most_recent_news = []
@@ -30,6 +42,7 @@ class News:
         raise NotImplementedError()
 
 class TagesschauNews(News):
+    """Class to retrieve data from german Tagesschau RSS feed."""
 
     def __init__(self, hours_limit: int, news_interest: str = "wirtschaft") -> None:
         super().__init__(hours_limit)
@@ -60,6 +73,7 @@ class TagesschauNews(News):
             self.most_recent_news.append(body)
 
 class NYTBusinessNews(News):
+    """Class to retrieve data from New York Times Business RSS feed."""
 
     def __init__(self, hours_limit: int) -> None:
         super().__init__(hours_limit)

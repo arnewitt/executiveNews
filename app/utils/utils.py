@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 def run_summarization():
+    """Create a summary of configured RSS feeds."""
     # Setup OpenAI client
     base_url = os.environ.get("BASE_URL", None)
     api_key = os.environ.get("API_KEY", None)
@@ -35,6 +36,7 @@ def run_summarization():
     print(summary)
 
 def check_time_and_run(target_hour, target_minute):
+    """Checks if a report should be created and executes script if required."""
     while True:
         logging.info('Checking the time...')
 
