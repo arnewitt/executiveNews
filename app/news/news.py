@@ -1,5 +1,5 @@
 
-from utils import is_less_than_x_hours_ago
+from utils.utils import is_less_than_x_hours_ago
 
 import feedparser
 import ssl

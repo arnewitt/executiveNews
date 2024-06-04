@@ -1,19 +1,16 @@
-
-from openai import OpenAI
-from news import NYTBusinessNews, TagesschauNews
-from summarizer import NewsSummarizer
-
 import os
-
+from openai import OpenAI
+from news.news import NYTBusinessNews, TagesschauNews
+from summarizer.summarizer import NewsSummarizer
 
 def main():
     # Setup OpenAI client
-    base_url = "Enter your base URL"
-    api_key = "Enter your api key"
+    base_url = os.environ.get("BASE_URL", None)
+    api_key = os.environ.get("API_KEY", None)
 
     openai_client = OpenAI(
-        base_url = base_url,
-        api_key = api_key
+        base_url=base_url,
+        api_key=api_key
     )
 
     # Configure news search

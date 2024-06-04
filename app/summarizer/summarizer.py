@@ -2,7 +2,7 @@
 from typing import List
 from openai import OpenAI
 
-from news import News
+from news.news import News
 
 class NewsSummarizer:
     
