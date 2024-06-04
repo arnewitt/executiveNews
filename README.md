@@ -23,14 +23,15 @@ This project provides a streamlined way to fetch and summarize the latest news f
 ## Run
 
 1. Clone project with `git clone https://github.com/arnewitt/executiveNews.git && cd executiveNews`
-2. With Docker:
+2. Test with pytest by using `PYTHONPATH=./app pytest tests/`
+3. With Docker:
   - Update Dockerfile with your credentials
   - Build and run container with `docker build -t executivenews . && docker run -e API_KEY=your_api_key -e BASE_URL=your_base_url executivenews`
-3. Without Docker:
+4. Without Docker:
   - Set environment variables with `export API_KEY="your_api_key" export BASE_URL="your_base_url"` 
   - Install dependencies and execute main script with `pip install -r requirements.txt && python app/main.py`
-4. ??
-5. Profit
+5. ??
+6. Profit
 
 ## Contributing
 
