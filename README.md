@@ -1,9 +1,6 @@
-# executiveNews
-This project provides a streamlined way to fetch and summarize the latest news from various sources. It leverages RSS feeds and integrates with OpenAI-format compatible APIs to generate concise summaries of recent news articles. The aim is to deliver clear, important information without the noise, making it easier to stay informed.
-
 # News Summarizer
 
-This project provides a streamlined way to fetch and summarize the latest news from various sources. It leverages RSS feeds and integrates with an OpenAI compatible API to generate concise summaries of recent news articles. The aim is to deliver clear, important information without the noise, making it easier to stay informed. Currently it uses Llama3-70b from the [NVIDIA API catalog](https://build.nvidia.com/meta/llama3-70b).  
+This project provides a streamlined way to fetch and summarize the latest news from various sources. It leverages RSS feeds and integrates with an OpenAI compatible API to generate short summaries of recent news articles. The aim is to deliver clear, important information without the noise, making it easier to stay informed. Currently it uses Llama3-70b from the [NVIDIA API catalog](https://build.nvidia.com/meta/llama3-70b).  
 
 ## Features
 
