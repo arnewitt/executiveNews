@@ -1,4 +1,5 @@
-
+import pytz
+from datetime import datetime, timedelta
 from app.news.news import TagesschauNews, NYTBusinessNews
 
 class MockFeedEntry:
@@ -13,14 +14,15 @@ class MockFeed:
         self.entries = entries
 
 def mock_parse(url):
+    recent_time = (datetime.now(pytz.utc) - timedelta(hours=1)).strftime("%a, %d %b %Y %H:%M:%S %z")
     if "tagesschau" in url:
         return MockFeed([
-            MockFeedEntry("Title 1", "http://example.com/1", "Summary 1", "Mon, 01 Jan 2024 12:00:00 +0000"),
-            MockFeedEntry("Wirtschaft vor acht", "http://example.com/2", "Summary 2", "Mon, 01 Jan 2024 12:00:00 +0000")
+            MockFeedEntry("Title 1", "http://example.com/1", "Summary 1", recent_time),
+            MockFeedEntry("Wirtschaft vor acht", "http://example.com/2", "Summary 2", recent_time)
         ])
     elif "nyt" in url:
         return MockFeed([
-            MockFeedEntry("Title 3", "http://example.com/3", "Summary 3", "Mon, 01 Jan 2024 12:00:00 +0000")
+            MockFeedEntry("Title 3", "http://example.com/3", "Summary 3", recent_time)
         ])
 
 def test_tagesschau_news(monkeypatch):
