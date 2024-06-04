@@ -1,5 +1,5 @@
 
-from news.news import TagesschauNews, NYTBusinessNews
+from app.news.news import TagesschauNews, NYTBusinessNews
 
 class MockFeedEntry:
     def __init__(self, title, link, summary, published):

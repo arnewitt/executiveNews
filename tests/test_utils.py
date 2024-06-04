@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 import pytz
 
-from utils.utils import is_less_than_x_hours_ago
+from app.utils.utils import is_less_than_x_hours_ago
 
 def test_is_less_than_x_hours_ago():
     current_time = datetime.now(pytz.utc)

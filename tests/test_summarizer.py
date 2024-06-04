@@ -1,7 +1,7 @@
 
 from unittest.mock import MagicMock
-from summarizer.summarizer import NewsSummarizer
-from news.news import TagesschauNews, NYTBusinessNews
+from app.summarizer.summarizer import NewsSummarizer
+from app.news.news import TagesschauNews, NYTBusinessNews
 
 class MockOpenAIClient:
     def chat(self):
