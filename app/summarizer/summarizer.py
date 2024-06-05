@@ -1,16 +1,19 @@
 
 from typing import List
 from openai import OpenAI
-
+from datetime import datetime
 from news.news import News
+import json
+import os
 
 class NewsSummarizer:
     """Used to summarize news from RSS feeds."""
     
-    def __init__(self, news_feeds: List[News], openai_client: OpenAI) -> None:
+    def __init__(self, news_feeds: List[News], openai_client: OpenAI, persist: bool = False) -> None:
         self.news_feeds = news_feeds
         self._recent_news_summaries = []
         self.client = openai_client
+        self.persist = persist
 
     def _prompt_exec_summary(self, news: str) -> str:
         """
@@ -49,6 +52,10 @@ class NewsSummarizer:
             if news_items:
                 prompt_intermediate_summary = self._prompt_intermediate_summary(news="\n\n".join(news_items))
                 summary_news = self._execute_query(prompt_intermediate_summary)
+                
+                if self.persist == True:
+                    self.persist_summary(summary_news, filename=f"intermediate-{datetime.now()}.md")
+                
                 self._recent_news_summaries.append(summary_news)
 
         return self._recent_news_summaries
@@ -62,7 +69,12 @@ class NewsSummarizer:
         """
         news_summaries = self._fetch_and_summarize_news()
         prompt = self._prompt_exec_summary(news="\n\n".join(news_summaries))
-        return self._execute_query(prompt)
+        exec_summary = self._execute_query(prompt)
+
+        if self.persist == True:
+            self.persist_summary(exec_summary, filename=f"executive-{datetime.now()}.md")
+        
+        return exec_summary
 
     def _execute_query(self, query: str) -> str:
         """
@@ -82,3 +94,21 @@ class NewsSummarizer:
             stream=False
         )
         return response.choices[0].message.content
+
+    def persist_summary(self, summary: str, filename: str):
+        """
+        Store data with summary in a Markdown file. Can be empty.
+
+        Parameters:
+        - summary (str): The summary to store.
+        - filename (str): The filename to store the summary in.
+        """
+        directory = "./app/data/summary/"
+        file_path = f"{directory}{filename}"
+        
+        if self.persist == True:
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            with open(file_path, "w") as file:
+                json.dump(summary, file)

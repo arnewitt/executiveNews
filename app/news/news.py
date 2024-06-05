@@ -1,20 +1,37 @@
 
 from datetime import datetime, timedelta
 import ssl
+import json
 import pytz
 import feedparser
+import os
 
 
 class News:
     """Base Class for News to be summarized"""
 
-    def __init__(self, hours_limit: int) -> None:
+    def __init__(self, hours_limit: int, persist: bool = False) -> None:
         self.rss_url = None
         self.most_recent_news = []
+        self.persist = persist
         self.hours_limit = hours_limit
 
     def get_news(self):
         raise NotImplementedError()
+    
+    def persist_news(self):
+        """
+        Store data from most recent news in a JSON file. Can be empty list.
+        """
+        directory = "./app/data/raw/"
+        file_path = f"{directory}{datetime.now()}_{self.rss_url.replace('/', '_')}_news.json"
+        
+        if self.persist == True:
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            with open(file_path, "w") as file:
+                json.dump(self.most_recent_news, file)
     
     def is_less_than_x_hours_ago(self, date_str, hours: int = 24) -> bool:
         """
@@ -46,12 +63,12 @@ class News:
 class TagesschauNews(News):
     """Class to retrieve data from german Tagesschau RSS feed."""
 
-    def __init__(self, hours_limit: int, news_interest: str = "wirtschaft") -> None:
-        super().__init__(hours_limit)
+    def __init__(self, hours_limit: int, persist: bool, news_interest: str = "wirtschaft") -> None:
+        super().__init__(hours_limit, persist)
         self.news_interest = news_interest
         self.rss_url = f"https://www.tagesschau.de/{news_interest.lower()}/index~rss2.xml"
 
-    def get_news(self):
+    def get_news(self, persist: bool = False):
         if hasattr(ssl, '_create_unverified_context'):
             ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -73,13 +90,15 @@ class TagesschauNews(News):
             }
             
             self.most_recent_news.append(body)
+        self.persist_news()
+
 
 
 class NYTBusinessNews(News):
     """Class to retrieve data from New York Times Business RSS feed."""
 
-    def __init__(self, hours_limit: int) -> None:
-        super().__init__(hours_limit)
+    def __init__(self, hours_limit: int, persist: bool) -> None:
+        super().__init__(hours_limit, persist)
         self.rss_url = "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"
 
     def get_news(self):
@@ -102,13 +121,13 @@ class NYTBusinessNews(News):
             }
             
             self.most_recent_news.append(body)
-
+        self.persist_news()
 
 class BloombergNews(News):
     """Class to retrieve data from Bloomberg RSS feed via Google News."""
 
-    def __init__(self, hours_limit: int) -> None:
-        super().__init__(hours_limit)
+    def __init__(self, hours_limit: int, persist: bool) -> None:
+        super().__init__(hours_limit, persist)
         self.rss_url = "https://news.google.com/rss/search?q=Bloomberg&hl=en-US&gl=US&ceid=US:en"
 
     def get_news(self):
@@ -131,7 +150,8 @@ class BloombergNews(News):
             }
             
             self.most_recent_news.append(body)
-    
+        self.persist_news()
+
     def is_less_than_x_hours_ago(self, date_str, hours: int = 24) -> bool:
         """
         Checks if a given date string is less than x amount of hours ago from current system time.
