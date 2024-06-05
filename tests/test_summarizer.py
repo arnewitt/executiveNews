@@ -15,7 +15,7 @@ def mock_completions_create(model, messages, temperature, top_p, stream):
     return MagicMock(choices=[MagicMock(message=MagicMock(content="Mock summary"))])
 
 def test_news_summarizer(monkeypatch):
-    news_feeds = [TagesschauNews(hours_limit=24), NYTBusinessNews(hours_limit=24)]
+    news_feeds = [TagesschauNews(hours_limit=24, persist=False), NYTBusinessNews(hours_limit=24, persist=False)]
 
     for feed in news_feeds:
         feed.get_news = MagicMock()
