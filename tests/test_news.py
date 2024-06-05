@@ -27,14 +27,14 @@ def mock_parse(url):
 
 def test_tagesschau_news(monkeypatch):
     monkeypatch.setattr("feedparser.parse", mock_parse)
-    news = TagesschauNews(hours_limit=24)
+    news = TagesschauNews(hours_limit=24, persist=False)
     news.get_news()
     assert len(news.most_recent_news) == 1
     assert news.most_recent_news[0]["title"] == "Title 1"
 
 def test_nyt_business_news(monkeypatch):
     monkeypatch.setattr("feedparser.parse", mock_parse)
-    news = NYTBusinessNews(hours_limit=24)
+    news = NYTBusinessNews(hours_limit=24, persist=False)
     news.get_news()
     assert len(news.most_recent_news) == 1
     assert news.most_recent_news[0]["title"] == "Title 3"
